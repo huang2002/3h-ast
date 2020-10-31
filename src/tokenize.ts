@@ -5,11 +5,14 @@ export const tokenizeDefaults = {
     numberSuffixes: new Set(['D', 'B', 'O', 'H']),
     spaceCharacters: new Set(' \r\n\t'),
 };
-
+/** dts2md break */
 export type TokenizeOptions = typeof tokenizeDefaults;
-
+/** dts2md break */
 const enum TOKEN_FLAGS { ANY, SPACE, NUMBER, NUMBER_SUFFIX }
-
+/** dts2md break */
+/**
+ * Split source code into tokens
+ */
 export const tokenize = (
     source: string,
     options?: Partial<TokenizeOptions>,

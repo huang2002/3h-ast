@@ -6,11 +6,17 @@ export type ASTNode =
     | { type: 'word'; value: string; offset: number; }
     | { type: 'symbol'; value: string; offset: number; }
     | { type: 'span'; start: string; stop: string; body: ASTNode[]; offset: number; };
-
+/** dts2md break */
 export interface ASTOptions extends TokenizeOptions {
     spanSymbols: Map<string, string>;
 }
-
+/** dts2md break */
+/**
+ * Default span symbols:
+ * '(' -> ')'
+ * '[' -> ']'
+ * '{' -> '}'
+ */
 export const astDefaults = Object.assign({}, tokenizeDefaults, {
     spanSymbols: new Map([
         ['(', ')'],
@@ -18,7 +24,10 @@ export const astDefaults = Object.assign({}, tokenizeDefaults, {
         ['{', '}'],
     ]),
 }) as ASTOptions;
-
+/** dts2md break */
+/**
+ * Convert tokens to AST nodes
+ */
 export const token2ast = (
     tokens: string[],
     options?: Partial<ASTOptions>,
