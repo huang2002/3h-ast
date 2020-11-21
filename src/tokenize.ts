@@ -4,6 +4,15 @@ export const tokenizeDefaults = {
     numberCharacters: new Set('0123456789.'),
     numberSuffixes: new Set(['D', 'B', 'O', 'H']),
     spaceCharacters: new Set(' \r\n\t'),
+    escapeCharacters: new Map([
+        ['t', '\t'],
+        ['r', '\r'],
+        ['n', '\n'],
+        ['\n', '\n'],
+        ['"', '"'],
+        ["'", "'"],
+        ['`', '`'],
+    ]),
 };
 /** dts2md break */
 export type TokenizeOptions = typeof tokenizeDefaults;
@@ -25,6 +34,7 @@ export const tokenize = (
         numberCharacters,
         numberSuffixes,
         spaceCharacters,
+        escapeCharacters,
     } = config;
 
     const tokens = [];
@@ -37,12 +47,19 @@ export const tokenize = (
         const character = source[i];
 
         if (globFlag) {
-            tokenBuffer += character;
-            if (character === globFlag) {
-                tokens.push(tokenBuffer);
-                tokenBuffer = '';
-                globFlag = '';
-                state = TOKEN_FLAGS.ANY;
+            if (
+                tokenBuffer[tokenBuffer.length - 1] === '\\'
+                && escapeCharacters.has(character)
+            ) {
+                tokenBuffer = tokenBuffer.slice(0, -1) + escapeCharacters.get(character);
+            } else {
+                tokenBuffer += character;
+                if (character === globFlag) {
+                    tokens.push(tokenBuffer);
+                    tokenBuffer = '';
+                    globFlag = '';
+                    state = TOKEN_FLAGS.ANY;
+                }
             }
             continue;
         }
