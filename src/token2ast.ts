@@ -1,11 +1,35 @@
 import { TokenizeOptions, tokenizeDefaults } from './tokenize';
 
-export type ASTNode =
-    | { type: 'glob'; value: string; offset: number; }
-    | { type: 'number'; value: string; suffix: string; offset: number; }
-    | { type: 'word'; value: string; offset: number; }
-    | { type: 'symbol'; value: string; offset: number; }
-    | { type: 'span'; start: string; stop: string; body: ASTNode[]; offset: number; };
+export type ASTNodeBase<T, U> = {
+    type: T;
+    offset: number;
+    line: number;
+} & U;
+/** dts2md break */
+export type GlobNode = ASTNodeBase<'glob', {
+    value: string;
+}>;
+/** dts2md break */
+export type NumberNode = ASTNodeBase<'number', {
+    value: string;
+    suffix: string;
+}>;
+/** dts2md break */
+export type WordNode = ASTNodeBase<'word', {
+    value: string;
+}>;
+/** dts2md break */
+export type SymbolNode = ASTNodeBase<'symbol', {
+    value: string;
+}>;
+/** dts2md break */
+export type SpanNode = ASTNodeBase<'span', {
+    start: string;
+    stop: string;
+    body: readonly ASTNode[];
+}>;
+/** dts2md break */
+export type ASTNode = GlobNode | NumberNode | WordNode | SymbolNode | SpanNode;
 /** dts2md break */
 export interface ASTOptions extends TokenizeOptions {
     spanSymbols: Map<string, string>;
@@ -25,6 +49,21 @@ export const astDefaults = Object.assign({}, tokenizeDefaults, {
     ]),
 }) as ASTOptions;
 /** dts2md break */
+export interface ASTResult {
+    /**
+     * The result of the AST parsing
+     */
+    ast: readonly ASTNode[];
+    /**
+     * The character offset of the upcoming character
+     */
+    stopOffset: number;
+    /**
+     * The line number of the last line
+     */
+    stopLine: number;
+}
+/** dts2md break */
 /**
  * Convert tokens to AST nodes
  */
@@ -32,9 +71,10 @@ export const token2ast = (
     tokens: string[],
     options?: Partial<ASTOptions>,
     initOffset = 0,
+    initLine = 1,
     cursorStart = 0,
     cursorStop = tokens.length,
-) => {
+): ASTResult => {
 
     const config = Object.assign({}, astDefaults, options);
     const {
@@ -48,6 +88,7 @@ export const token2ast = (
 
     const result = new Array<ASTNode>();
     let offset = initOffset;
+    let line = initLine;
 
     for (let mainCursor = cursorStart; mainCursor < cursorStop; mainCursor++) {
 
@@ -69,33 +110,43 @@ export const token2ast = (
             }
 
             if (spanStopPosition === mainCursor + 1) {
+
                 result.push({
                     type: 'span',
                     start: token,
                     stop: spanStopSymbol,
                     body: [],
                     offset,
+                    line,
                 });
+
                 offset += 1; // stop symbol
+
             } else {
-                const body = token2ast(
+
+                const ast = token2ast(
                     tokens,
                     config,
                     offset + 1,
+                    line,
                     mainCursor + 1,
                     spanStopPosition,
                 );
+
+                const body = ast.ast;
+
                 result.push({
                     type: 'span',
                     start: token,
                     stop: spanStopSymbol,
                     body,
                     offset,
+                    line,
                 });
-                offset = body[body.length - 1].offset // last token offset
-                    + tokens[spanStopPosition - 1].length; // last token length
-                // the final offset modification will
-                // solve the width of the stop symbol
+
+                offset = ast.stopOffset;
+                line = ast.stopLine;
+
             }
 
             mainCursor = spanStopPosition;
@@ -107,6 +158,7 @@ export const token2ast = (
                 type: 'symbol',
                 value: token,
                 offset,
+                line,
             });
 
         } else if (globSymbols.has(token[0])) {
@@ -115,6 +167,7 @@ export const token2ast = (
                 type: 'glob',
                 value: token,
                 offset,
+                line,
             });
 
         } else if (numberCharacters.has(token[0])) {
@@ -131,6 +184,7 @@ export const token2ast = (
                 value: token.slice(0, suffixOffset),
                 suffix: token.slice(suffixOffset),
                 offset,
+                line,
             });
 
         } else if (!spaceCharacters.has(token[0])) {
@@ -139,14 +193,25 @@ export const token2ast = (
                 type: 'word',
                 value: token,
                 offset,
+                line,
             });
 
         }
 
         offset += token.length;
 
+        for (let i = 0; i < token.length; i++) {
+            if (token[i] === '\n') {
+                line++;
+            }
+        }
+
     }
 
-    return result;
+    return {
+        ast: result,
+        stopOffset: offset,
+        stopLine: line,
+    };
 
 };
