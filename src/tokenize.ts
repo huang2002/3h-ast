@@ -2,6 +2,7 @@ export const tokenizeDefaults = {
     normalSymbols: new Set('()[]{}<>+-*/\\?`~!@#$%^&=|,.:;'),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789.'),
+    extendedNumberCharacters: new Set('ABCDEF'),
     numberSuffixes: new Set(['D', 'B', 'O', 'H']),
     spaceCharacters: new Set(' \r\n\t'),
     escapeCharacters: new Map([
@@ -32,6 +33,7 @@ export const tokenize = (
         normalSymbols,
         globSymbols,
         numberCharacters,
+        extendedNumberCharacters,
         numberSuffixes,
         spaceCharacters,
         escapeCharacters,
@@ -70,6 +72,17 @@ export const tokenize = (
             }
             tokenBuffer = character;
             globFlag = character;
+            continue;
+        }
+
+        if (
+            state === TOKEN_FLAGS.NUMBER
+            && (
+                numberCharacters.has(character)
+                || extendedNumberCharacters.has(character)
+            )
+        ) {
+            tokenBuffer += character;
             continue;
         }
 

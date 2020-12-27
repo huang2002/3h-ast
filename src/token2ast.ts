@@ -180,12 +180,13 @@ export const token2ast = (
 
         } else if (numberCharacters.has(token[0])) {
 
-            let suffixOffset = 0;
-            for (; suffixOffset < token.length; suffixOffset++) {
-                if (numberSuffixes.has(token[suffixOffset])) {
+            let suffixOffset = token.length - 1;
+            for (; suffixOffset >= 0; suffixOffset--) {
+                if (!numberSuffixes.has(token[suffixOffset])) {
                     break;
                 }
             }
+            suffixOffset++;
 
             result.push({
                 type: 'number',
