@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+- Add `TokenizeOptions.extendedNumberCharacters`
+- Fix number parsing
+
 ## 0.2.1
 
 - Fix nested span parsing
