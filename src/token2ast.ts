@@ -97,11 +97,19 @@ export const token2ast = (
         if (spanSymbols.has(token)) {
 
             const spanStopSymbol = spanSymbols.get(token)!;
+            let nested = 0;
 
             let spanStopPosition = mainCursor + 1;
             for (; spanStopPosition < tokens.length; spanStopPosition++) {
+                if (tokens[spanStopPosition] === token) {
+                    nested++;
+                    continue;
+                }
                 if (tokens[spanStopPosition] === spanStopSymbol) {
-                    break;
+                    if (!nested) {
+                        break;
+                    }
+                    nested--;
                 }
             }
 
