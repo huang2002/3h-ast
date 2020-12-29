@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2
+
+- Fix logs
+
 ## 0.3.1
 
 - Fix `tokenize`
