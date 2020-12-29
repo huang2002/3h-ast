@@ -1,6 +1,6 @@
 {
   "name": "3h-ast",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A simple AST generator.",
   "module": "./dist/3h-ast.min.js",
   "main": "./dist/3h-ast.umd.min.js",
