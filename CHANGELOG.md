@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.2.0
+## 0.3.1
+
+- Fix `tokenize`
+
+## 0.3.0
 
 - Add `TokenizeOptions.extendedNumberCharacters`
 - Fix number parsing
