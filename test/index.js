@@ -15,10 +15,10 @@ test(null, {
             ]
         );
         context.assertShallowEqual(
-            HA.tokenize('{ \'"``"\', `\\abc\\t\\r\\n\\\n`, "\\`" }'),
+            HA.tokenize('{ \'"``"\', `\\Hi\\t\\r\\n\\\n`, "\\`" }'),
             [
                 '{', ' ', '\'"``"\'', ',', ' ',
-                '`\\abc\t\r\n\n`', ',', ' ',
+                '`\\Hi\t\r\n\n`', ',', ' ',
                 '"`"', ' ', '}',
             ]
         );

@@ -100,8 +100,6 @@ export const tokenize = (
             flag = TOKEN_FLAGS.SPACE;
         } else if (numberCharacters.has(character)) {
             flag = TOKEN_FLAGS.NUMBER;
-        } else if (numberSuffixes.has(character)) {
-            flag = TOKEN_FLAGS.NUMBER_SUFFIX;
         } else if (normalSymbols.has(character)) {
             if (tokenBuffer) {
                 tokens.push(tokenBuffer);
@@ -117,10 +115,7 @@ export const tokenize = (
             || (
                 state === TOKEN_FLAGS.ANY
                 && !normalSymbols.has(character)
-                && (
-                    flag === TOKEN_FLAGS.NUMBER
-                    || flag === TOKEN_FLAGS.NUMBER_SUFFIX
-                )
+                && flag === TOKEN_FLAGS.NUMBER
             )
         ) {
             tokenBuffer += character;
