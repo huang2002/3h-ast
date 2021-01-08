@@ -4,6 +4,7 @@ export type ASTNodeTemplate<T, U> = {
     type: T;
     offset: number;
     line: number;
+    column: number;
 } & U;
 /** dts2md break */
 export type GlobNode = ASTNodeTemplate<'glob', {
@@ -62,6 +63,10 @@ export interface ASTResult {
      * The line number of the last line
      */
     stopLine: number;
+    /**
+     * The number of the last column
+     */
+    stopColumn: number;
 }
 /** dts2md break */
 /**
@@ -72,6 +77,7 @@ export const token2ast = (
     options?: Partial<ASTOptions>,
     initOffset = 0,
     initLine = 1,
+    initColumn = 1,
     cursorStart = 0,
     cursorStop = tokens.length,
 ): ASTResult => {
@@ -89,6 +95,7 @@ export const token2ast = (
     const result = new Array<ASTNode>();
     let offset = initOffset;
     let line = initLine;
+    let column = initColumn;
 
     for (let mainCursor = cursorStart; mainCursor < cursorStop; mainCursor++) {
 
@@ -114,7 +121,9 @@ export const token2ast = (
             }
 
             if (spanStopPosition === tokens.length) {
-                throw `missing ${spanStopSymbol} for ${token} at ${offset}`;
+                throw new SyntaxError(
+                    `missing ${spanStopSymbol} for ${token} at line ${line} column ${column}`
+                );
             }
 
             if (spanStopPosition === mainCursor + 1) {
@@ -126,17 +135,20 @@ export const token2ast = (
                     body: [],
                     offset,
                     line,
+                    column,
                 });
 
-                offset += 1; // stop symbol
+                // stop symbol
+                offset++;
 
             } else {
 
                 const ast = token2ast(
                     tokens,
                     config,
-                    offset + 1,
+                    offset + 1, // +1 for start symbol
                     line,
+                    column + 1,
                     mainCursor + 1,
                     spanStopPosition,
                 );
@@ -150,10 +162,12 @@ export const token2ast = (
                     body,
                     offset,
                     line,
+                    column,
                 });
 
                 offset = ast.stopOffset;
                 line = ast.stopLine;
+                column = ast.stopColumn;
 
             }
 
@@ -167,6 +181,7 @@ export const token2ast = (
                 value: token,
                 offset,
                 line,
+                column,
             });
 
         } else if (globSymbols.has(token[0])) {
@@ -176,6 +191,7 @@ export const token2ast = (
                 value: token,
                 offset,
                 line,
+                column,
             });
 
         } else if (numberCharacters.has(token[0])) {
@@ -194,6 +210,7 @@ export const token2ast = (
                 suffix: token.slice(suffixOffset),
                 offset,
                 line,
+                column,
             });
 
         } else if (!spaceCharacters.has(token[0])) {
@@ -203,6 +220,7 @@ export const token2ast = (
                 value: token,
                 offset,
                 line,
+                column,
             });
 
         }
@@ -215,12 +233,20 @@ export const token2ast = (
             }
         }
 
+        const lastNextLineIndex = token.lastIndexOf('\n');
+        if (~lastNextLineIndex) {
+            column = token.length - lastNextLineIndex;
+        } else {
+            column += token.length;
+        }
+
     }
 
     return {
         ast: result,
         stopOffset: offset,
         stopLine: line,
+        stopColumn: column,
     };
 
 };
