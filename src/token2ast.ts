@@ -1,29 +1,29 @@
 import { TokenizeOptions, tokenizeDefaults } from './tokenize';
 
-export type ASTNodeBase<T, U> = {
+export type ASTNodeTemplate<T, U> = {
     type: T;
     offset: number;
     line: number;
 } & U;
 /** dts2md break */
-export type GlobNode = ASTNodeBase<'glob', {
+export type GlobNode = ASTNodeTemplate<'glob', {
     value: string;
 }>;
 /** dts2md break */
-export type NumberNode = ASTNodeBase<'number', {
+export type NumberNode = ASTNodeTemplate<'number', {
     value: string;
     suffix: string;
 }>;
 /** dts2md break */
-export type WordNode = ASTNodeBase<'word', {
+export type WordNode = ASTNodeTemplate<'word', {
     value: string;
 }>;
 /** dts2md break */
-export type SymbolNode = ASTNodeBase<'symbol', {
+export type SymbolNode = ASTNodeTemplate<'symbol', {
     value: string;
 }>;
 /** dts2md break */
-export type SpanNode = ASTNodeBase<'span', {
+export type SpanNode = ASTNodeTemplate<'span', {
     start: string;
     stop: string;
     body: readonly ASTNode[];
