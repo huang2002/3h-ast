@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- Rename `ASTNodeBase` `ASTNodeTemplate`
+- Add column info
+
 ## 0.3.2
 
 - Fix logs
