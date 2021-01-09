@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Fix tokenization
+
 ## 0.4.0
 
 - Rename `ASTNodeBase` `ASTNodeTemplate`
