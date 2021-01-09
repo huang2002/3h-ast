@@ -22,6 +22,10 @@ test(null, {
                 '"`"', ' ', '}',
             ]
         );
+        context.assertShallowEqual(
+            HA.tokenize("import('math').E"),
+            ['import', '(', "'math'", ')', '.', 'E']
+        );
     },
 
     token2ast(context) {
