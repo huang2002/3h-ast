@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+- Fix glob parsing
+
 ## 0.4.1
 
 - Fix tokenization
