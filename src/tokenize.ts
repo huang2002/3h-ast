@@ -1,5 +1,5 @@
 export const tokenizeDefaults = {
-    normalSymbols: new Set('()[]{}<>+-*/\\?`~!@#$%^&=|,.:;'),
+    normalSymbols: new Set('()[]{}<>+-*/\\?~!@#$%^&=|,.:;'),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
     extendedNumberCharacters: new Set('.ABCDEF'),

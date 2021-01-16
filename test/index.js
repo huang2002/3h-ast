@@ -30,6 +30,8 @@ test(null, {
 
     token2ast(context) {
 
+        context.expectThrow(HA.token2ast, SyntaxError, [['"']]);
+
         const ast1 = HA.token2ast(['{', '}']);
         context.assertStrictEqual(ast1.stopOffset, 2);
         context.assertStrictEqual(ast1.stopLine, 1);
@@ -49,8 +51,7 @@ test(null, {
             '\n\t', '3.14D', '\n',
             '}', ';',
         ]);
-        // @ts-ignore
-        const { body } = ast2.ast[1];
+        const { body } = /** @type {HA.SpanNode} */(ast2.ast[1]);
         context.assertStrictEqual(ast2.stopOffset, 28);
         context.assertStrictEqual(ast2.stopLine, 4);
         context.assertStrictEqual(ast2.stopColumn, 3);

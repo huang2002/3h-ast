@@ -186,6 +186,12 @@ export const token2ast = (
 
         } else if (globSymbols.has(token[0])) {
 
+            if (token.length === 1) {
+                throw new SyntaxError(
+                    `missing ${token} for ${token} at line ${line} column ${column}`
+                );
+            }
+
             result.push({
                 type: 'glob',
                 value: token,
