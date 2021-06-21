@@ -26,6 +26,13 @@ test(null, {
             HA.tokenize("import('math').E"),
             ['import', '(', "'math'", ')', '.', 'E']
         );
+        context.assertShallowEqual(
+            HA.tokenize("if (a ** 2 >= b && c):\n    d << 1"),
+            [
+                'if', ' ', '(', 'a', ' ', '**', ' ', '2', ' ', '>=', ' ', 'b', ' ',
+                '&&', ' ', 'c', ')', ':', '\n    ', 'd', ' ', '<<', ' ', '1',
+            ]
+        );
     },
 
     token2ast(context) {
@@ -48,11 +55,11 @@ test(null, {
         const ast2 = HA.token2ast([
             'max', '{',
             '\n\t', '(', '(', 'a', ' ', '+', ' ', '`b`', ')', ')', ',',
-            '\n\t', '3.14D', '\n',
+            '\n\t', '3.14D', ' ', '**', ' ', '2', '\n',
             '}', ';',
         ]);
         const { body } = /** @type {HA.SpanNode} */(ast2.ast[1]);
-        context.assertStrictEqual(ast2.stopOffset, 28);
+        context.assertStrictEqual(ast2.stopOffset, 33);
         context.assertStrictEqual(ast2.stopLine, 4);
         context.assertStrictEqual(ast2.stopColumn, 3);
         context.assertStrictEqual(ast2.ast.length, 3);
@@ -69,7 +76,7 @@ test(null, {
         context.assertStrictEqual(ast2.ast[1].column, 4);
         context.assertStrictEqual(/** @type {HA.SpanNode} */(ast2.ast[1]).start, '{');
         context.assertStrictEqual(/** @type {HA.SpanNode} */(ast2.ast[1]).stop, '}');
-        context.assertStrictEqual(body.length, 3);
+        context.assertStrictEqual(body.length, 5);
         context.assertDeepEqual(body[0], {
             type: 'span',
             start: '(',
@@ -120,10 +127,25 @@ test(null, {
             line: 3,
             column: 2,
         });
+        context.assertShallowEqual(body[3], {
+            type: 'symbol',
+            value: '**',
+            offset: 26,
+            line: 3,
+            column: 8,
+        });
+        context.assertShallowEqual(body[4], {
+            type: 'number',
+            value: '2',
+            suffix: '',
+            offset: 29,
+            line: 3,
+            column: 11,
+        });
         context.assertShallowEqual(ast2.ast[2], {
             type: 'symbol',
             value: ';',
-            offset: 27,
+            offset: 32,
             line: 4,
             column: 2,
         });

@@ -85,6 +85,7 @@ export const token2ast = (
     const config = Object.assign({}, astDefaults, options);
     const {
         normalSymbols,
+        twoCharacterSymbols,
         globSymbols,
         numberCharacters,
         numberSuffixes,
@@ -174,7 +175,7 @@ export const token2ast = (
             mainCursor = spanStopPosition;
             // mainCursor++ automatically goes here
 
-        } else if (normalSymbols.has(token)) {
+        } else if (normalSymbols.has(token) || twoCharacterSymbols.has(token)) {
 
             result.push({
                 type: 'symbol',

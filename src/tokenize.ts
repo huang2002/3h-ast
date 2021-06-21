@@ -1,5 +1,6 @@
 export const tokenizeDefaults = {
     normalSymbols: new Set('()[]{}<>+-*/\\?~!@#$%^&=|,.:;'),
+    twoCharacterSymbols: new Set(['&&', '||', '==', '>=', '<=', '!=', '<<', '>>', '++', '--', '**']),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
     extendedNumberCharacters: new Set('.ABCDEF'),
@@ -31,6 +32,7 @@ export const tokenize = (
     const config = Object.assign({}, tokenizeDefaults, options);
     const {
         normalSymbols,
+        twoCharacterSymbols,
         globSymbols,
         numberCharacters,
         extendedNumberCharacters,
@@ -92,6 +94,17 @@ export const tokenize = (
         ) {
             tokenBuffer += character;
             state = TOKEN_FLAGS.NUMBER_SUFFIX;
+            continue;
+        }
+
+        if (
+            state === TOKEN_FLAGS.ANY
+            && normalSymbols.has(character)
+            && tokens.length
+            && tokens[tokens.length - 1].length === 1
+            && twoCharacterSymbols.has(tokens[tokens.length - 1] + character)
+        ) {
+            tokens[tokens.length - 1] += character;
             continue;
         }
 
