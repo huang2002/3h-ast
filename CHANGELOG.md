@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+- Add two-character symbol support
+
 ## 0.4.2
 
 - Fix glob parsing
