@@ -23,8 +23,8 @@ test(null, {
             ]
         );
         context.assertShallowEqual(
-            HA.tokenize("import('math').E"),
-            ['import', '(', "'math'", ')', '.', 'E']
+            HA.tokenize("import('math').E |> print"),
+            ['import', '(', "'math'", ')', '.', 'E', ' ', '|>', ' ', 'print']
         );
         context.assertShallowEqual(
             HA.tokenize("if (a ** 2 >= b && c):\n    d << 1"),

@@ -3,6 +3,7 @@ export const tokenizeDefaults = {
     twoCharacterSymbols: new Set([
         '&&', '||', '==', '>=', '<=', '!=', '<<', '>>',
         '++', '--', '**', '+=', '-=', '*=', '/=', '&=', '^=', '|=',
+        '|>', '->', '=>',
     ]),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
