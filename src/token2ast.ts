@@ -86,6 +86,7 @@ export const token2ast = (
     const {
         normalSymbols,
         twoCharacterSymbols,
+        threeCharacterSymbols,
         globSymbols,
         numberCharacters,
         numberSuffixes,
@@ -175,7 +176,11 @@ export const token2ast = (
             mainCursor = spanStopPosition;
             // mainCursor++ automatically goes here
 
-        } else if (normalSymbols.has(token) || twoCharacterSymbols.has(token)) {
+        } else if (
+            normalSymbols.has(token)
+            || twoCharacterSymbols.has(token)
+            || threeCharacterSymbols.has(token)
+        ) {
 
             result.push({
                 type: 'symbol',

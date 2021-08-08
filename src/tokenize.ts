@@ -1,9 +1,12 @@
 export const tokenizeDefaults = {
     normalSymbols: new Set('()[]{}<>+-*/\\?~!@#$%^&=|,.:;'),
     twoCharacterSymbols: new Set([
-        '&&', '||', '==', '>=', '<=', '!=', '<<', '>>',
+        '&&', '||', '??', '==', '>=', '<=', '!=', '<<', '>>',
         '++', '--', '**', '+=', '-=', '*=', '/=', '&=', '^=', '|=',
         '|>', '->', '=>',
+    ]),
+    threeCharacterSymbols: new Set([
+        '&&=', '||=', '??=', '===', '!==', '<<=', '>>=', '**=',
     ]),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
@@ -37,6 +40,7 @@ export const tokenize = (
     const {
         normalSymbols,
         twoCharacterSymbols,
+        threeCharacterSymbols,
         globSymbols,
         numberCharacters,
         extendedNumberCharacters,
@@ -107,6 +111,17 @@ export const tokenize = (
             && tokens.length
             && tokens[tokens.length - 1].length === 1
             && twoCharacterSymbols.has(tokens[tokens.length - 1] + character)
+        ) {
+            tokens[tokens.length - 1] += character;
+            continue;
+        }
+
+        if (
+            state === TOKEN_FLAGS.ANY
+            && normalSymbols.has(character)
+            && tokens.length
+            && tokens[tokens.length - 1].length === 2
+            && threeCharacterSymbols.has(tokens[tokens.length - 1] + character)
         ) {
             tokens[tokens.length - 1] += character;
             continue;

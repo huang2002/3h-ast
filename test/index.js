@@ -6,9 +6,9 @@ test(null, {
 
     tokenize(context) {
         context.assertShallowEqual(
-            HA.tokenize('a += fun(1011B, [c1 + 3.1415 > 1.AH]);'),
+            HA.tokenize('a **= fun(1011B, [c1 + 3.1415 > 1.AH]);'),
             [
-                'a', ' ', '+=', ' ', 'fun', '(',
+                'a', ' ', '**=', ' ', 'fun', '(',
                 '1011B', ',', ' ', '[', 'c1',
                 ' ', '+', ' ', '3.1415', ' ',
                 '>', ' ', '1.AH', ']', ')', ';',
