@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0
+
+- Add more symbols
+
 ## 0.8.0
 
 - Add more two-character symbols
