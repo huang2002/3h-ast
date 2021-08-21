@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.0
+
+- Add four-character symbols
+
 ## 0.11.0
 
 - Add `>>>`
