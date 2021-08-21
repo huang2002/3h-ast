@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Add `>>>`
+
 ## 0.10.0
 
 - Add more symbols
