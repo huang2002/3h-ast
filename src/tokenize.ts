@@ -10,6 +10,9 @@ export const tokenizeDefaults = {
         '&&=', '||=', '??=', '===', '!==', '<<=', '>>=', '**=',
         '...', '>>>',
     ]),
+    fourCharacterSymbols: new Set([
+        '>>>=',
+    ]),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
     extendedNumberCharacters: new Set('.ABCDEF'),
@@ -43,6 +46,7 @@ export const tokenize = (
         normalSymbols,
         twoCharacterSymbols,
         threeCharacterSymbols,
+        fourCharacterSymbols,
         globSymbols,
         numberCharacters,
         extendedNumberCharacters,
@@ -111,22 +115,34 @@ export const tokenize = (
             state === TOKEN_FLAGS.ANY
             && normalSymbols.has(character)
             && tokens.length
-            && tokens[tokens.length - 1].length === 1
-            && twoCharacterSymbols.has(tokens[tokens.length - 1] + character)
         ) {
-            tokens[tokens.length - 1] += character;
-            continue;
-        }
 
-        if (
-            state === TOKEN_FLAGS.ANY
-            && normalSymbols.has(character)
-            && tokens.length
-            && tokens[tokens.length - 1].length === 2
-            && threeCharacterSymbols.has(tokens[tokens.length - 1] + character)
-        ) {
-            tokens[tokens.length - 1] += character;
-            continue;
+            const lastToken = tokens[tokens.length - 1];
+
+            if (
+                lastToken.length === 1
+                && twoCharacterSymbols.has(lastToken + character)
+            ) {
+                tokens[tokens.length - 1] += character;
+                continue;
+            }
+
+            if (
+                lastToken.length === 2
+                && threeCharacterSymbols.has(lastToken + character)
+            ) {
+                tokens[tokens.length - 1] += character;
+                continue;
+            }
+
+            if (
+                lastToken.length === 3
+                && fourCharacterSymbols.has(lastToken + character)
+            ) {
+                tokens[tokens.length - 1] += character;
+                continue;
+            }
+
         }
 
         let flag = TOKEN_FLAGS.ANY;

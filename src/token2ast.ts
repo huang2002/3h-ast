@@ -87,6 +87,7 @@ export const token2ast = (
         normalSymbols,
         twoCharacterSymbols,
         threeCharacterSymbols,
+        fourCharacterSymbols,
         globSymbols,
         numberCharacters,
         numberSuffixes,
@@ -180,6 +181,7 @@ export const token2ast = (
             normalSymbols.has(token)
             || twoCharacterSymbols.has(token)
             || threeCharacterSymbols.has(token)
+            || fourCharacterSymbols.has(token)
         ) {
 
             result.push({
