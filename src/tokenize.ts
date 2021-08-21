@@ -7,7 +7,8 @@ export const tokenizeDefaults = {
         '//', '/*', '*/',
     ]),
     threeCharacterSymbols: new Set([
-        '&&=', '||=', '??=', '===', '!==', '<<=', '>>=', '**=', '...',
+        '&&=', '||=', '??=', '===', '!==', '<<=', '>>=', '**=',
+        '...', '>>>',
     ]),
     globSymbols: new Set(['"', "'", '`']),
     numberCharacters: new Set('0123456789'),
