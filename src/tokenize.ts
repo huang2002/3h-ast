@@ -56,11 +56,20 @@ export const tokenize = (
     } = config;
 
     const tokens = [];
-    let tokenBuffer = '';
+    let tokenBuffer = source[0];
     let globFlag = '';
     let state = TOKEN_FLAGS.ANY;
 
-    for (let i = 0; i < source.length; i++) {
+    // init state
+    if (spaceCharacters.has(tokenBuffer)) {
+        state = TOKEN_FLAGS.SPACE;
+    } else if (
+        numberCharacters.has(tokenBuffer)
+    ) {
+        state = TOKEN_FLAGS.NUMBER;
+    }
+
+    for (let i = 1; i < source.length; i++) {
 
         const character = source[i];
 
@@ -95,7 +104,10 @@ export const tokenize = (
             state === TOKEN_FLAGS.NUMBER
             && (
                 numberCharacters.has(character)
-                || extendedNumberCharacters.has(character)
+                || (
+                    extendedNumberCharacters.has(character)
+                    && !tokenBuffer.includes('.')
+                )
             )
         ) {
             tokenBuffer += character;
@@ -148,7 +160,10 @@ export const tokenize = (
         let flag = TOKEN_FLAGS.ANY;
         if (spaceCharacters.has(character)) {
             flag = TOKEN_FLAGS.SPACE;
-        } else if (numberCharacters.has(character)) {
+        } else if (
+            numberCharacters.has(character)
+            || extendedNumberCharacters.has(character)
+        ) {
             flag = TOKEN_FLAGS.NUMBER;
         } else if (normalSymbols.has(character)) {
             if (tokenBuffer) {
@@ -164,8 +179,8 @@ export const tokenize = (
             state === flag
             || (
                 state === TOKEN_FLAGS.ANY
-                && !normalSymbols.has(character)
                 && flag === TOKEN_FLAGS.NUMBER
+                && !normalSymbols.has(character)
             )
         ) {
             tokenBuffer += character;

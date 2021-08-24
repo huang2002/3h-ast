@@ -11,7 +11,7 @@ test(null, {
                 'a', ' ', '**=', ' ', 'fun', '(',
                 '1011B', ',', ' ', '[', 'c1',
                 ' ', '+', ' ', '3.1415', ' ',
-                '>', ' ', '1.AH', ']', ')', ';',
+                '>', ' ', '1.', 'AH', ']', ')', ';',
             ]
         );
         context.assertShallowEqual(
@@ -36,6 +36,10 @@ test(null, {
         context.assertShallowEqual(
             HA.tokenize('x0.toString'),
             ['x0', '.', 'toString']
+        );
+        context.assertShallowEqual(
+            HA.tokenize('3.14'),
+            ['3.14']
         );
     },
 
