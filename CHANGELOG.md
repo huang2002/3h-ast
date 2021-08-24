@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.4
+
+- Fix tokenization
+
 ## 0.12.3
 
 - Fix token splitting
