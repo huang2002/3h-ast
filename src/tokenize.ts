@@ -65,9 +65,7 @@ export const tokenize = (
         globFlag = tokenBuffer;
     } else if (spaceCharacters.has(tokenBuffer)) {
         state = TOKEN_FLAGS.SPACE;
-    } else if (
-        numberCharacters.has(tokenBuffer)
-    ) {
+    } else if (numberCharacters.has(tokenBuffer)) {
         state = TOKEN_FLAGS.NUMBER;
     } else if (normalSymbols.has(tokenBuffer)) {
         tokens.push(tokenBuffer);
@@ -154,7 +152,8 @@ export const tokenize = (
         } else if (
             numberCharacters.has(character)
             || (
-                extendedNumberCharacters.has(character)
+                state === TOKEN_FLAGS.NUMBER
+                && extendedNumberCharacters.has(character)
                 && !tokenBuffer.includes('.')
             )
         ) {

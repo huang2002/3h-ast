@@ -49,6 +49,10 @@ test(null, {
             HA.tokenize('"abc"'),
             ['"abc"']
         );
+        context.assertShallowEqual(
+            HA.tokenize('; Array; 0A'),
+            [';', ' ', 'Array', ';', ' ', '0A']
+        );
     },
 
     token2ast(context) {
