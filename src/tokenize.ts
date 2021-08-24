@@ -67,6 +67,9 @@ export const tokenize = (
         numberCharacters.has(tokenBuffer)
     ) {
         state = TOKEN_FLAGS.NUMBER;
+    } else if (normalSymbols.has(tokenBuffer)) {
+        tokens.push(tokenBuffer);
+        tokenBuffer = '';
     }
 
     for (let i = 1; i < source.length; i++) {
@@ -97,20 +100,6 @@ export const tokenize = (
             }
             tokenBuffer = character;
             globFlag = character;
-            continue;
-        }
-
-        if (
-            state === TOKEN_FLAGS.NUMBER
-            && (
-                numberCharacters.has(character)
-                || (
-                    extendedNumberCharacters.has(character)
-                    && !tokenBuffer.includes('.')
-                )
-            )
-        ) {
-            tokenBuffer += character;
             continue;
         }
 
@@ -162,7 +151,10 @@ export const tokenize = (
             flag = TOKEN_FLAGS.SPACE;
         } else if (
             numberCharacters.has(character)
-            || extendedNumberCharacters.has(character)
+            || (
+                extendedNumberCharacters.has(character)
+                && !tokenBuffer.includes('.')
+            )
         ) {
             flag = TOKEN_FLAGS.NUMBER;
         } else if (normalSymbols.has(character)) {

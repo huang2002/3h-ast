@@ -41,6 +41,10 @@ test(null, {
             HA.tokenize('3.14'),
             ['3.14']
         );
+        context.assertShallowEqual(
+            HA.tokenize('(666)'),
+            ['(', '666', ')']
+        );
     },
 
     token2ast(context) {
