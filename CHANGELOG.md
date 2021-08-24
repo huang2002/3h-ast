@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.1
+
+- Fix token splitting
+
 ## 0.12.0
 
 - Add four-character symbols
