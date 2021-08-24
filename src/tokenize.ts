@@ -169,6 +169,7 @@ export const tokenize = (
             )
         ) {
             tokenBuffer += character;
+            continue;
         } else {
             if (tokenBuffer) {
                 tokens.push(tokenBuffer);

@@ -1,6 +1,6 @@
 // @ts-check
 const { test } = require('3h-test');
-const HA = require('..');
+const HA = /** @type {import('..')} */(require('../dist/3h-ast.umd'));
 
 test(null, {
 
@@ -32,6 +32,10 @@ test(null, {
                 'if', ' ', '(', 'a', ' ', '**', ' ', '2', ' ', '>=', ' ', 'b', ' ',
                 '&&', ' ', 'c', ')', ':', '\n    ', 'd', ' ', '>>>=', ' ', '1',
             ]
+        );
+        context.assertShallowEqual(
+            HA.tokenize('x0.toString'),
+            ['x0', '.', 'toString']
         );
     },
 
