@@ -61,7 +61,9 @@ export const tokenize = (
     let state = TOKEN_FLAGS.ANY;
 
     // init state
-    if (spaceCharacters.has(tokenBuffer)) {
+    if (globSymbols.has(tokenBuffer)) {
+        globFlag = tokenBuffer;
+    } else if (spaceCharacters.has(tokenBuffer)) {
         state = TOKEN_FLAGS.SPACE;
     } else if (
         numberCharacters.has(tokenBuffer)
