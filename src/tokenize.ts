@@ -114,6 +114,7 @@ export const tokenize = (
 
         if (
             state === TOKEN_FLAGS.ANY
+            && !tokenBuffer
             && normalSymbols.has(character)
             && tokens.length
         ) {
@@ -168,16 +169,16 @@ export const tokenize = (
             continue;
         }
 
-        if (
-            state === flag
-            || (
-                state === TOKEN_FLAGS.ANY
-                && flag === TOKEN_FLAGS.NUMBER
-                && !normalSymbols.has(character)
-            )
+        if (state === flag) {
+            tokenBuffer += character;
+        } else if (
+            state === TOKEN_FLAGS.ANY
+            && flag === TOKEN_FLAGS.NUMBER
         ) {
             tokenBuffer += character;
-            continue;
+            if (tokenBuffer.length > 1) { // \w+\d
+                continue;
+            }
         } else {
             if (tokenBuffer) {
                 tokens.push(tokenBuffer);

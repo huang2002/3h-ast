@@ -53,6 +53,10 @@ test(null, {
             HA.tokenize('; Array; 0A'),
             [';', ' ', 'Array', ';', ' ', '0A']
         );
+        context.assertShallowEqual(
+            HA.tokenize('(10.11)'),
+            ['(', '10.11', ')']
+        );
     },
 
     token2ast(context) {
