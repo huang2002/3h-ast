@@ -22,7 +22,8 @@ export const tokenizeDefaults = {
         ['t', '\t'],
         ['r', '\r'],
         ['n', '\n'],
-        ['\n', '\n'],
+        ['\n', ''],
+        ['\\', '\\'],
         ['"', '"'],
         ["'", "'"],
         ['`', '`'],
@@ -59,6 +60,7 @@ export const tokenize = (
     let tokenBuffer = source[0];
     let globFlag = '';
     let state = TOKEN_FLAGS.ANY;
+    let escapeFlag = false;
 
     // init state
     if (globSymbols.has(tokenBuffer)) {
@@ -77,13 +79,17 @@ export const tokenize = (
         const character = source[i];
 
         if (globFlag) {
-            if (
-                tokenBuffer[tokenBuffer.length - 1] === '\\'
-                && escapeCharacters.has(character)
-            ) {
+            if (escapeFlag) {
+                if (!escapeCharacters.has(character)) {
+                    throw new SyntaxError(
+                        `invalid escape character: \\${character}`
+                    );
+                }
                 tokenBuffer = tokenBuffer.slice(0, -1) + escapeCharacters.get(character);
+                escapeFlag = false;
             } else {
                 tokenBuffer += character;
+                escapeFlag = (character === '\\');
                 if (character === globFlag) {
                     tokens.push(tokenBuffer);
                     tokenBuffer = '';
@@ -100,6 +106,7 @@ export const tokenize = (
             }
             tokenBuffer = character;
             globFlag = character;
+            escapeFlag = false;
             continue;
         }
 
