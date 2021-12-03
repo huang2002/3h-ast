@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0
+
+- Fix character escaping
+
 ## 0.12.6
 
 - Fix token splitting
