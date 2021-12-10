@@ -18,16 +18,6 @@ export const tokenizeDefaults = {
     extendedNumberCharacters: new Set('.ABCDEF'),
     numberSuffixes: new Set(['D', 'B', 'O', 'H']),
     spaceCharacters: new Set(' \r\n\t'),
-    escapeCharacters: new Map([
-        ['t', '\t'],
-        ['r', '\r'],
-        ['n', '\n'],
-        ['\n', ''],
-        ['\\', '\\'],
-        ['"', '"'],
-        ["'", "'"],
-        ['`', '`'],
-    ]),
 };
 /** dts2md break */
 export type TokenizeOptions = typeof tokenizeDefaults;
@@ -53,7 +43,6 @@ export const tokenize = (
         extendedNumberCharacters,
         numberSuffixes,
         spaceCharacters,
-        escapeCharacters,
     } = config;
 
     const tokens = [];
@@ -79,22 +68,17 @@ export const tokenize = (
         const character = source[i];
 
         if (globFlag) {
+            tokenBuffer += character;
             if (escapeFlag) {
-                if (!escapeCharacters.has(character)) {
-                    throw new SyntaxError(
-                        `invalid escape character: \\${character}`
-                    );
-                }
-                tokenBuffer = tokenBuffer.slice(0, -1) + escapeCharacters.get(character);
                 escapeFlag = false;
             } else {
-                tokenBuffer += character;
-                escapeFlag = (character === '\\');
                 if (character === globFlag) {
                     tokens.push(tokenBuffer);
                     tokenBuffer = '';
                     globFlag = '';
                     state = TOKEN_FLAGS.ANY;
+                } else {
+                    escapeFlag = (character === '\\');
                 }
             }
             continue;

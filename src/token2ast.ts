@@ -34,6 +34,7 @@ export type ASTNode = GlobNode | NumberNode | WordNode | SymbolNode | SpanNode;
 /** dts2md break */
 export interface ASTOptions extends TokenizeOptions {
     spanSymbols: Map<string, string>;
+    escapeCharacters: Map<string, string>;
 }
 /** dts2md break */
 /**
@@ -47,6 +48,16 @@ export const astDefaults = Object.assign({}, tokenizeDefaults, {
         ['(', ')'],
         ['[', ']'],
         ['{', '}'],
+    ]),
+    escapeCharacters: new Map([
+        ['t', '\t'],
+        ['r', '\r'],
+        ['n', '\n'],
+        ['\n', ''],
+        ['\\', '\\'],
+        ['"', '"'],
+        ["'", "'"],
+        ['`', '`'],
     ]),
 }) as ASTOptions;
 /** dts2md break */
@@ -93,6 +104,7 @@ export const token2ast = (
         numberSuffixes,
         spaceCharacters,
         spanSymbols,
+        escapeCharacters,
     } = config;
 
     const result = new Array<ASTNode>();
@@ -194,15 +206,46 @@ export const token2ast = (
 
         } else if (globSymbols.has(token[0])) {
 
-            if (token.length === 1) {
+            let value = token[0];
+            let escapeFlag = false;
+
+            for (let i = 1; i < token.length - 1; i++) {
+                const character = token[i];
+                if (escapeFlag) {
+                    if (!escapeCharacters.has(character)) {
+                        if (character === '\r' && token[i + 1] === '\n') {
+                            continue;
+                        }
+                        throw new SyntaxError(
+                            `unknown escape character: \\${character}`
+                        );
+                    }
+                    value += escapeCharacters.get(character)!;
+                    escapeFlag = false;
+                } else {
+                    if (character === '\\') {
+                        escapeFlag = true;
+                        continue;
+                    }
+                    value += character;
+                }
+            }
+
+            if (
+                escapeFlag
+                || (token[token.length - 1] !== token[0])
+                || (token.length === 1)
+            ) {
                 throw new SyntaxError(
-                    `missing ${token} for ${token} at line ${line} column ${column}`
+                    `missing corresponding ${spanSymbols} at line ${line} column ${column}`
                 );
             }
 
+            value += token[0];
+
             result.push({
                 type: 'glob',
-                value: token,
+                value,
                 offset,
                 line,
                 column,

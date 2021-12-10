@@ -15,11 +15,11 @@ test(null, {
             ]
         );
         context.assertShallowEqual(
-            HA.tokenize('{ \'"``"\', `Hi\\\\\\t\\r\\nL\\\no`, "\\`" }'),
+            HA.tokenize('{ \'"``"\', `Hi\\\\\\t\\r\\n\\\no`, "\\`" }'),
             [
                 '{', ' ', '\'"``"\'', ',', ' ',
-                '`Hi\\\t\r\nLo`', ',', ' ',
-                '"`"', ' ', '}',
+                '`Hi\\\\\\t\\r\\n\\\no`', ',', ' ',
+                '"\\`"', ' ', '}',
             ]
         );
         context.assertShallowEqual(
@@ -108,34 +108,35 @@ test(null, {
             offset: 6,
             line: 2,
             column: 2,
-            body: [{
-                type: 'span',
-                start: '(',
-                stop: ')',
-                offset: 7,
-                line: 2,
-                column: 3,
-                body: [{
-                    type: 'word',
-                    value: 'a',
-                    offset: 8,
-                    line: 2,
-                    column: 4,
-                }, {
-                    type: 'symbol',
-                    value: '+',
-                    offset: 10,
-                    line: 2,
-                    column: 6,
-                }, {
-                    type: 'glob',
-                    value: '`b`',
-                    offset: 12,
-                    line: 2,
-                    column: 8,
-                }],
-            }],
+            body: /** @type {HA.SpanNode} */(body[0]).body,
         });
+        context.assertDeepEqual(/** @type {HA.SpanNode} */(body[0]).body, [{
+            type: 'span',
+            start: '(',
+            stop: ')',
+            offset: 7,
+            line: 2,
+            column: 3,
+            body: [{
+                type: 'word',
+                value: 'a',
+                offset: 8,
+                line: 2,
+                column: 4,
+            }, {
+                type: 'symbol',
+                value: '+',
+                offset: 10,
+                line: 2,
+                column: 6,
+            }, {
+                type: 'glob',
+                value: '`b`',
+                offset: 12,
+                line: 2,
+                column: 8,
+            }],
+        }]);
         context.assertShallowEqual(body[1], {
             type: 'symbol',
             value: ',',
@@ -173,6 +174,11 @@ test(null, {
             line: 4,
             column: 2,
         });
+
+        const ast3 = HA.token2ast(['"\\\n\\\r\n"']);
+        context.assertStrictEqual(ast3.stopLine, 3);
+        context.assertStrictEqual(/** @type {HA.GlobNode} */(ast3.ast[0]).value, '""');
+
     },
 
 });
