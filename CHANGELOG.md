@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.0
+
+- Fix line end escaping
+
 ## 0.13.0
 
 - Fix character escaping
